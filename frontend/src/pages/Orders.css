@@ -1,0 +1,237 @@
+.orders-page {
+  min-height: 100vh;
+  padding: var(--spacing-3xl) 0;
+  background: var(--apple-bg);
+}
+
+.orders-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.orders-header h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--apple-text);
+}
+
+.orders-header p {
+  color: var(--apple-text-secondary);
+  font-size: 16px;
+  margin: 0;
+}
+
+.not-logged-in {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  background: var(--apple-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-orders {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  background: var(--apple-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-orders svg {
+  color: var(--apple-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.no-orders h3 {
+  font-size: 24px;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-md);
+  color: var(--apple-text);
+}
+
+.no-orders p {
+  color: var(--apple-text-secondary);
+  margin-bottom: var(--spacing-xl);
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.order-card {
+  background: var(--apple-white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.order-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--apple-gray-light);
+}
+
+.order-info h3 {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--apple-text);
+}
+
+.order-date {
+  color: var(--apple-text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.order-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-icon {
+  border-radius: 50%;
+  padding: var(--spacing-xs);
+}
+
+.status-icon.pending {
+  background: var(--apple-orange);
+  color: white;
+}
+
+.status-icon.shipped {
+  background: var(--apple-blue);
+  color: white;
+}
+
+.status-icon.delivered {
+  background: var(--apple-green);
+  color: white;
+}
+
+.status-text {
+  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+}
+
+.status-text.order-placed {
+  color: var(--apple-orange);
+}
+
+.status-text.shipped {
+  color: var(--apple-blue);
+}
+
+.status-text.delivered {
+  color: var(--apple-green);
+}
+
+.order-items {
+  margin-bottom: var(--spacing-lg);
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--apple-gray-light);
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-details h4 {
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+  color: var(--apple-text);
+}
+
+.item-details p {
+  font-size: 14px;
+  color: var(--apple-text-secondary);
+  margin: 0;
+}
+
+.item-price {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--apple-text);
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--apple-gray-light);
+}
+
+.order-total {
+  font-size: 18px;
+  color: var(--apple-text);
+}
+
+.order-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.order-actions button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+@media (max-width: 768px) {
+  .order-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+
+  .order-footer {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .order-actions {
+    justify-content: center;
+  }
+
+  .order-item {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+}
