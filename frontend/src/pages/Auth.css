@@ -161,9 +161,75 @@
   color: var(--apple-blue-hover);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .auth-page {
+    padding: var(--spacing-lg) 0;
+  }
+  
   .auth-card {
-    margin: 0 var(--spacing-md);
+    margin: var(--spacing-md);
     padding: var(--spacing-xl);
+    max-width: none;
+  }
+  
+  .auth-header h1 {
+    font-size: 28px;
+  }
+  
+  .demo-credentials {
+    padding: var(--spacing-sm);
+    font-size: 12px;
+  }
+  
+  .form-group input {
+    padding: 16px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .auth-submit-btn {
+    padding: 18px;
+    font-size: 18px;
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .auth-card {
+    margin: var(--spacing-sm);
+    padding: var(--spacing-lg);
+  }
+  
+  .auth-header h1 {
+    font-size: 24px;
+  }
+  
+  .auth-header p {
+    font-size: 14px;
+  }
+  
+  .demo-credentials h4 {
+    font-size: 12px;
+  }
+  
+  .demo-credentials p {
+    font-size: 11px;
+  }
+  
+  .form-group input {
+    padding: 14px;
+  }
+  
+  .auth-submit-btn {
+    padding: 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  
+  .auth-footer p {
+    font-size: 13px;
   }
 }
