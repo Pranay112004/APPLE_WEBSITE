@@ -16,9 +16,10 @@ frontend/.env
 # Build outputs
 build/
 dist/
-*/build/
+# */build/  # Comment out to allow frontend/build
 */dist/
-frontend/build/
+# frontend/build/  # Allow frontend build for deployment
+!frontend/build/
 
 # Logs
 logs
