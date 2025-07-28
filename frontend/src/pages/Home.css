@@ -559,53 +559,83 @@
   .modern-hero {
     height: auto;
     min-height: 100vh;
-    padding: 60px 0;
+    padding: 80px 0 60px;
   }
   
   .hero-container {
-    padding: 0 15px;
+    padding: 0 20px;
+    gap: 40px;
   }
   
   .hero-title {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: 16px;
   }
   
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    margin-bottom: 32px;
   }
   
   .hero-actions {
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
     width: 100%;
   }
   
   .btn-primary,
   .btn-secondary {
     width: 100%;
-    max-width: 280px;
-    padding: 15px 20px;
+    max-width: 300px;
+    padding: 16px 24px;
+    font-size: 16px;
+    min-height: 48px; /* Better touch target */
+  }
+  
+  .hero-image img {
+    max-width: 90%;
+    border-radius: 16px;
+  }
+  
+  .hero-indicators {
+    bottom: 20px;
+    gap: 8px;
+  }
+  
+  .indicator {
+    width: 10px;
+    height: 10px;
+    /* Larger touch target for mobile */
+    padding: 4px;
+  }
+  
+  .announcement-banner {
+    padding: 16px 0;
   }
   
   .announcement-content {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    padding: 0 20px;
   }
   
   .announcement-content p {
     font-size: 1rem;
+    text-align: center;
   }
   
   .section-header {
-    margin-bottom: 40px;
+    margin-bottom: 48px;
   }
   
   .section-title {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: 12px;
   }
   
   .section-subtitle {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    padding: 0 20px;
   }
 
   .products-grid,
@@ -613,16 +643,38 @@
   .values-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
+    padding: 0 20px;
   }
 
+  .infinity-scroll {
+    padding: 60px 0;
+  }
+  
   .infinity-item {
-    width: 250px;
+    width: 280px;
     margin: 0 var(--spacing-md);
   }
   
   .featured-section,
   .categories-section,
+  .bestsellers-section,
   .values-section {
     padding: 60px 0;
+  }
+  
+  .category-card,
+  .value-card {
+    margin: 0 20px;
+  }
+  
+  /* Improve touch interactions */
+  .category-card:hover,
+  .value-card:hover {
+    transform: none; /* Disable hover transforms on mobile */
+  }
+  
+  .category-card:active,
+  .value-card:active {
+    transform: scale(0.98);
   }
 }
