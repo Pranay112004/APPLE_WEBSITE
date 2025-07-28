@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+# /build  # Comment out to allow build folder in repo for deployment
 
 # misc
 .DS_Store
