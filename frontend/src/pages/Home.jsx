@@ -1,67 +1,51 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import ProductCard from "../components/ProductCard";
-import { useApp } from "../context/RealAppContext"; // ✅ Backend API integration
+import { useApp } from "../context/RealAppContext";
 import "./Home.css";
 
 const Home = () => {
   const { products, getProducts } = useApp();
-  const canvasRef = useRef(null);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 300], [0, -50]);
+  const y2 = useTransform(scrollY, [0, 300], [0, -100]);
 
-  // Three.js particle system (simplified version)
+  const heroSlides = [
+    {
+      title: "iPhone 16 Pro",
+      subtitle: "Titanium. So strong. So light. So Pro.",
+      image:
+        "https://www.apple.com/v/iphone-16-pro/f/images/overview/contrast/iphone_16_pro__erqf8e51gl4y_xlarge_2x.jpg",
+      link: "/products?category=iPhone",
+      color: "#1d1d1f",
+    },
+    {
+      title: "MacBook Pro",
+      subtitle: "Mind-blowing. Head-turning.",
+      image:
+        "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mbp16-spaceblack-select-202410?wid=904&hei=840&fmt=jpeg&qlt=90&.v=Nys1UFFBTmI1T0VnWWNyeEZhdDFYamhTSEZFNjlmT2xUUDNBTjljV1BxWVk4UDMvOWNCVUEyZk1VN2FtQlpZWXZvdUZlR0V0VUdJSjBWaDVNVG95YlBROXI4TlIyY1pzUUZwNVlXcEFNb2c",
+      link: "/products?category=Mac",
+      color: "#1d1d1f",
+    },
+    {
+      title: "Apple Watch Ultra",
+      subtitle: "Adventure awaits.",
+      image:
+        "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=800&q=80",
+      link: "/products?category=Watch",
+      color: "#000000",
+    },
+  ];
+
+  // Auto-rotate hero slides
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles = [];
-    const particleCount = 100;
-
-    // Create particles
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        radius: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.8 + 0.2,
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((particle) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
-        ctx.fill();
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
   useEffect(() => {
     getProducts();
@@ -76,62 +60,148 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* Particle Background */}
-      <canvas ref={canvasRef} className="particle-canvas" />
+      {/* Modern Hero Section */}
+      <section
+        className="modern-hero"
+        style={{ backgroundColor: heroSlides[currentHeroIndex].color }}
+      >
+        <div className="hero-container">
+          <motion.div className="hero-content" style={{ y: y1 }}>
+            <motion.div
+              className="hero-badge"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              New
+            </motion.div>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <motion.div
-          className="hero-content"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <motion.h1
-            className="hero-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            iPhone 15 Pro
-          </motion.h1>
-          <motion.p
-            className="hero-subtitle"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            Titanium. So strong. So light. So Pro.
-          </motion.p>
+            <motion.h1
+              className="hero-title"
+              key={currentHeroIndex}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              {heroSlides[currentHeroIndex].title}
+            </motion.h1>
+
+            <motion.p
+              className="hero-subtitle"
+              key={`subtitle-${currentHeroIndex}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            >
+              {heroSlides[currentHeroIndex].subtitle}
+            </motion.p>
+
+            <motion.div
+              className="hero-actions"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.4 }}
+            >
+              <Link
+                to={heroSlides[currentHeroIndex].link}
+                className="btn-primary"
+              >
+                Buy now
+                <span className="btn-icon">→</span>
+              </Link>
+              <Link
+                to={heroSlides[currentHeroIndex].link}
+                className="btn-secondary"
+              >
+                Learn more
+                <span className="btn-icon">+</span>
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <motion.div className="hero-image" style={{ y: y2 }}>
+            <motion.img
+              key={currentHeroIndex}
+              src={heroSlides[currentHeroIndex].image}
+              alt={heroSlides[currentHeroIndex].title}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Hero Indicators */}
+        <div className="hero-indicators">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${
+                currentHeroIndex === index ? "active" : ""
+              }`}
+              onClick={() => setCurrentHeroIndex(index)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Announcement Banner */}
+      <section className="announcement-banner">
+        <div className="container">
           <motion.div
-            className="hero-actions"
+            className="announcement-content"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
           >
-            <Link to="/products?category=iPhone" className="btn-primary">
-              Shop iPhone
-            </Link>
-            <Link to="/product/1" className="btn-secondary">
-              Learn more
+            <span className="announcement-icon">📱</span>
+            <p>
+              Get up to $800 in credit when you trade in iPhone 12 or higher.
+            </p>
+            <Link to="/products" className="announcement-link">
+              Shop now →
             </Link>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
         <section className="featured-section">
           <div className="container">
-            <motion.h2
-              className="section-title"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              Featured Products
-            </motion.h2>
+            <div className="section-header">
+              <motion.div
+                className="section-badge"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                ✨ Handpicked
+              </motion.div>
+              <motion.h2
+                className="section-title"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                Featured Products
+              </motion.h2>
+              <motion.p
+                className="section-subtitle"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Discover our most innovative and popular products
+              </motion.p>
+            </div>
             <div className="products-grid">
               {featuredProducts.map((product, index) => (
                 <motion.div

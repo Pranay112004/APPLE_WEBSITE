@@ -5,6 +5,7 @@ dotenv.config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 // Route imports
 const userRoutes = require("./routes/userRoutes");
@@ -17,12 +18,14 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3001", 
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:3001"
-  ],
+  origin: process.env.NODE_ENV === 'production'
+    ? [process.env.FRONTEND_URL || '*'] // In production, allow the deployed domain
+    : [
+        "http://localhost:3000",
+        "http://localhost:3001", 
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001"
+      ],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -59,9 +62,20 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Apple E-commerce API is running!");
-});
+// Serve React build files in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendBuildPath = path.join(__dirname, '../frontend/build');
+  app.use(express.static(frontendBuildPath));
+  
+  // Handle React routing - send all non-API requests to index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("Apple E-commerce API is running!");
+  });
+}
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

@@ -19,7 +19,7 @@ export const useApp = () => {
 };
 
 // Configure axios defaults
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
+const API_URL = process.env.REACT_APP_API_URL || "/api";
 axios.defaults.baseURL = API_URL;
 
 export const AppProvider = ({ children }) => {

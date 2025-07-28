@@ -91,7 +91,17 @@ const Admin = () => {
   // --- ✅ Corrected and Improved Submit Handler ---
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Assuming setLoading is from your context
+    setLoading(true);
+
+    // Validate that we have at least one image (file or URL)
+    const hasFiles = productForm.images.length > 0;
+    const hasValidUrls = productForm.imageUrls.some(url => url.trim());
+    
+    if (!hasFiles && !hasValidUrls) {
+      toast.error("Please provide at least one image (upload file or enter URL)");
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData();
     // Append all form fields to FormData
@@ -100,6 +110,12 @@ const Admin = () => {
         productForm.images.forEach((imageFile) => {
           formData.append("images", imageFile);
         });
+      } else if (key === "imageUrls") {
+        // Only send non-empty URLs
+        const validUrls = productForm.imageUrls.filter(url => url.trim());
+        if (validUrls.length > 0) {
+          formData.append("imageUrls", JSON.stringify(validUrls));
+        }
       } else if (
         typeof productForm[key] === "object" &&
         productForm[key] !== null
@@ -112,7 +128,7 @@ const Admin = () => {
 
     try {
       const apiUrl = `${
-        process.env.REACT_APP_API_URL || "http://localhost:8000/api"
+        process.env.REACT_APP_API_URL || "/api"
       }/products`;
 
       const response = await fetch(apiUrl, {
@@ -319,10 +335,13 @@ const Admin = () => {
                     {/* Enhanced Image Upload Section */}
                     <div className="form-group full-width">
                       <label>Product Images * (Max 5)</label>
+                      <p className="form-helper-text">
+                        You can either upload images from your device OR provide image URLs (or both). At least one image is required.
+                      </p>
                       
                       {/* File Upload Option */}
                       <div className="image-upload-section">
-                        <h4>Option 1: Upload from Device</h4>
+                        <h4>📁 Option 1: Upload from Device</h4>
                         <input
                           type="file"
                           multiple
@@ -330,7 +349,7 @@ const Admin = () => {
                           onChange={handleImageChange}
                           className="file-input"
                         />
-                        <small>Upload up to 5 images from your device</small>
+                        <small>Choose up to 5 images from your device (JPG, PNG, WebP, etc.)</small>
                         
                         {productForm.images.length > 0 && (
                           <div className="file-preview">
@@ -346,7 +365,7 @@ const Admin = () => {
 
                       {/* URL Input Option */}
                       <div className="image-upload-section">
-                        <h4>Option 2: Add Image URLs</h4>
+                        <h4>🌐 Option 2: Add Image URLs</h4>
                         {productForm.imageUrls.map((url, index) => (
                           <div key={index} className="url-input-row">
                             <input

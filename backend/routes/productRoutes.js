@@ -90,6 +90,7 @@ router.post(
         bestseller,
         featured,
         specifications,
+        imageUrls, // Add imageUrls from form data
       } = req.body;
 
       // Validation
@@ -100,26 +101,52 @@ router.post(
         });
       }
 
-      if (!req.files || req.files.length === 0) {
+      // Parse imageUrls if it exists and is a string (from FormData)
+      let urlsFromForm = [];
+      if (imageUrls) {
+        try {
+          urlsFromForm = JSON.parse(imageUrls).filter(url => url && url.trim());
+        } catch (e) {
+          // If not JSON, treat as single URL
+          if (typeof imageUrls === 'string' && imageUrls.trim()) {
+            urlsFromForm = [imageUrls.trim()];
+          }
+        }
+      }
+
+      // Check if we have either files or URLs
+      const hasFiles = req.files && req.files.length > 0;
+      const hasUrls = urlsFromForm.length > 0;
+      
+      if (!hasFiles && !hasUrls) {
         return res.status(400).json({
           success: false,
-          message: "At least one image is required",
+          message: "At least one image (file upload or URL) is required",
         });
       }
 
-      // Upload images to Cloudinary
-      const imageUrls = [];
-      for (const file of req.files) {
-        try {
-          const result = await uploadToCloudinary(file.buffer);
-          imageUrls.push(result.secure_url);
-        } catch (uploadError) {
-          console.error("Image upload error:", uploadError);
-          return res.status(500).json({
-            success: false,
-            message: "Failed to upload images",
-          });
+      // Process images: Upload files to Cloudinary and include URLs
+      const finalImageUrls = [];
+      
+      // Upload files to Cloudinary
+      if (hasFiles) {
+        for (const file of req.files) {
+          try {
+            const result = await uploadToCloudinary(file.buffer);
+            finalImageUrls.push(result.secure_url);
+          } catch (uploadError) {
+            console.error("Image upload error:", uploadError);
+            return res.status(500).json({
+              success: false,
+              message: "Failed to upload images",
+            });
+          }
         }
+      }
+      
+      // Add URL-based images
+      if (hasUrls) {
+        finalImageUrls.push(...urlsFromForm);
       }
 
       const product = new Product({
@@ -129,7 +156,7 @@ router.post(
         originalPrice: originalPrice ? Number(originalPrice) : undefined,
         category,
         subCategory,
-        images: imageUrls,
+        images: finalImageUrls,
         sizes: sizes ? JSON.parse(sizes) : [],
         colors: colors ? JSON.parse(colors) : [],
         bestseller: bestseller === "true",
